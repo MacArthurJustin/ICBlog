@@ -1,5 +1,6 @@
 <?php namespace App\Http\Requests;
 
+use Auth;
 use App\Http\Requests\Request;
 
 class CreateBlogPostRequest extends Request {
@@ -11,6 +12,7 @@ class CreateBlogPostRequest extends Request {
 	 */
 	public function authorize()
 	{
+		if(Auth::check()) return true;
 		return false;
 	}
 
@@ -22,7 +24,8 @@ class CreateBlogPostRequest extends Request {
 	public function rules()
 	{
 		return [
-			//
+			'title' => 'required|min:5',
+			'body' => 'required|min:25'
 		];
 	}
 

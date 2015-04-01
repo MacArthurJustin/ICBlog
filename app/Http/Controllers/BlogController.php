@@ -3,6 +3,9 @@
 use Auth;
 use App\BlogPost;
 use App\BlogComment;
+use App\Http\Requests\CreateBlogCommentRequest;
+use App\Http\Requests\CreateBlogPostRequest;
+use App\Http\Requests\UpdateBlogPostRequest;
 use Carbon\Carbon;
 use Redirect;
 use Request;
@@ -35,10 +38,25 @@ class BlogController extends Controller {
 	 * @return Response
 	 */
 	public function create() {
+		if(Auth::check()) {			
+			return view('create');
+		} else {
+			return Redirect::to('auth/login');
+		}
+	}
+
+	/**
+	 * Show the Post creation screen to authorized users.
+	 *
+	 * @param Integer $id The Post to edit
+	 *
+	 * @return Response
+	 */
+	public function edit($id) {
 		if(Auth::check()) {
-			$posts = BlogPost::all();
+			$post = BlogPost::find($id);
 			
-			return view('create', compact('posts'));
+			return view('edit', compact('post'));
 		} else {
 			return Redirect::to('auth/login');
 		}
@@ -49,12 +67,11 @@ class BlogController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function storePost() {
+	public function storePost(CreateBlogPostRequest $request) {
 		if(Auth::check()) {
-			$request = Request::all();
 			$request["user_id"] = Auth::user()->id;
 			
-			$post = BlogPost::create($request);
+			$post = BlogPost::create($request->all());
 			$post->save();
 			
 			return Redirect::to("post/{$post->id}");
@@ -68,13 +85,12 @@ class BlogController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function storeComment($id) {
+	public function storeComment(CreateBlogCommentRequest $request, $id) {
 		if(Auth::check()) {
-			$request = Request::all();
 			$request["post_id"] = $id;
 			$request["user_id"] = Auth::user()->id;
 			
-			$comment = BlogComment::create($request);
+			$comment = BlogComment::create($request->all());
 			$comment->save();
 			
 			return Redirect::to("post/{$id}");
@@ -97,29 +113,23 @@ class BlogController extends Controller {
 	}
 
 	/**
-	 * Show the Post editor screen to authorized users referenced by ID.
-	 *
-	 * @param Integer $id The ID of the post to edit 
-	 *
-	 * @return Response
-	 */
-	public function edit($id) {
-		$post = BlogPost::find($id);
-		
-		return view('post', compact('post'));
-	}
-
-	/**
 	 * Update Edited Post in Database
 	 *
 	 * @param Integer $id The ID of the post to save 
 	 *
 	 * @return Response
 	 */
-	public function updatePost($id) {
-		$post = BlogPost::find($id);
+	public function updatePost(UpdateBlogPostRequest $request, $id) {
 		
-		return view('post', compact('post'));
+		if(Auth::check()) {			
+			$comment = BlogPost::find($id);
+			
+			$comment->update($request->all());
+			
+			return Redirect::to("post/{$id}");
+		} else {
+			return Redirect::to('auth/login');
+		}
 	}
 
 	/**

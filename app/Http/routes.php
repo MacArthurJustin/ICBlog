@@ -13,8 +13,8 @@
 
 Route::get('/', 'BlogController@index');
 Route::get('post/create', 'BlogController@create');
-Route::get('post/{id}/edit', 'BlogController@editPost');
 Route::get('post/{id}', 'BlogController@show');
+Route::get('post/{id}/edit', 'BlogController@edit');
 
 Route::post('post', 'BlogController@storePost');
 Route::post('comment/{id}', 'BlogController@storeComment');
