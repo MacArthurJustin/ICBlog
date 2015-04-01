@@ -17,7 +17,7 @@
 		
 		<div class="form-group">
 			{!! Form::label('posted_at', 'Publish on:') !!}
-			{!! Form::input('date', 'posted_at', $post->posted_at, array('class' => 'form-control')) !!}
+			{!! Form::input('date', 'posted_at', Carbon\Carbon::parse($post->posted_at)->format('Y-m-d'), array('class' => 'form-control')) !!}
 		</div>
 		
 		<div class="form-group">

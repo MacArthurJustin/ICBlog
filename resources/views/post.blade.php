@@ -3,8 +3,13 @@
 @section('content')
 	<section class="blogPost">
 		<h1>{{ $post->title }} 
-		@if(Auth::user()->id == $post->user_id)
-			<a href="{{ action('BlogController@edit', $post->id) }}" style="font-size: 14px;">Edit Post</a>
+		@if(Auth::check())
+			@if(Auth::user()->id == $post->user_id)
+				<a href="{{ action('BlogController@edit', $post->id) }}" style="font-size: 14px;">Edit Post</a>
+				{!! Form::open(array('action' => array("BlogController@destroyPost", $post->id), 'method' => 'DELETE')) !!}
+				{!! Form::submit('Delete Post', array('style' => 'font-size: 14px')) !!}
+				{!! Form::close() !!}
+			@endif
 		@endif
 		</h1>
 		<h5>By {{ $post->user->name }} on {{ $post->posted_at }}</h5>
@@ -17,7 +22,16 @@
 		<h2>Comments</h2>
 		@foreach($post->comments as $comment)
 			<article>
-				<h5>{{ $comment->user->name }}</h5>
+				<h5>
+					{{ $comment->user->name }}
+					@if(Auth::check())
+						@if(Auth::user()->id == $comment->user_id)
+							{!! Form::open(array('action' => array("BlogController@destroyComment", $comment->id), 'method' => 'DELETE')) !!}
+							{!! Form::submit('Delete Comment') !!}
+							{!! Form::close() !!}
+						@endif
+					@endif
+				</h5>
 				<div class="body">
 					{{ $comment->body }}
 				</div>

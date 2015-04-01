@@ -36,6 +36,7 @@
 					@if(Auth::user()->level > 0)
 						<ul class="nav navbar-nav">
 							<li><a href="{{ url('/post/create') }}">Add Blog Post</a></li>
+							<li><a href="{{ url('/user/edit') }}">Edit User Levels</a></li>
 						</ul>
 					@endif
 				@endif

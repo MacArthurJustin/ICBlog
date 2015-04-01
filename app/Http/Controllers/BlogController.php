@@ -33,6 +33,19 @@ class BlogController extends Controller {
 	}
 
 	/**
+	 * Show a single BlogPost referenced by ID
+	 *
+	 * @param Integer $id The ID of the post to show 
+	 *
+	 * @return Response
+	 */
+	public function show($id) {
+		$post = BlogPost::find($id);
+		
+		return view('post', compact('post'));
+	}
+
+	/**
 	 * Show the Post creation screen to authorized users.
 	 *
 	 * @return Response
@@ -57,6 +70,23 @@ class BlogController extends Controller {
 			$post = BlogPost::find($id);
 			
 			return view('edit', compact('post'));
+		} else {
+			return Redirect::to('auth/login');
+		}
+	}
+
+	/**
+	 * Show the user .
+	 *
+	 * @param Integer $id The Post to edit
+	 *
+	 * @return Response
+	 */
+	public function editUser() {
+		if(Auth::check()) {
+			$users = User::all();
+			
+			return view('user', compact('users'));
 		} else {
 			return Redirect::to('auth/login');
 		}
@@ -100,19 +130,6 @@ class BlogController extends Controller {
 	}
 
 	/**
-	 * Show a single BlogPost referenced by ID
-	 *
-	 * @param Integer $id The ID of the post to show 
-	 *
-	 * @return Response
-	 */
-	public function show($id) {
-		$post = BlogPost::find($id);
-		
-		return view('post', compact('post'));
-	}
-
-	/**
 	 * Update Edited Post in Database
 	 *
 	 * @param Integer $id The ID of the post to save 
@@ -120,7 +137,6 @@ class BlogController extends Controller {
 	 * @return Response
 	 */
 	public function updatePost(UpdateBlogPostRequest $request, $id) {
-		
 		if(Auth::check()) {			
 			$comment = BlogPost::find($id);
 			
@@ -140,9 +156,35 @@ class BlogController extends Controller {
 	 * @return Response
 	 */
 	public function destroyPost($id) {
-		$post = BlogPost::find($id);
-		
-		return view('post', compact('post'));
+		if(Auth::check()) {
+			$post = BlogPost::find($id);
+			$post->delete();
+			
+			return Redirect::to("/");
+		} else {
+			return Redirect::to('auth/login');
+		}
+	}
+
+	/**
+	 * Delete Post From Database
+	 *
+	 * @param Integer $id The ID of the post to delete 
+	 *
+	 * @return Response
+	 */
+	public function destroyComment($id) {
+		if(Auth::check()) {
+			$comment = BlogComment::find($id);
+			
+			$postID = $comment->post->id;
+			
+			$comment->delete();
+			
+			return Redirect::to("post/{$postID}");
+		} else {
+			return Redirect::to('auth/login');
+		}
 	}
 
 }

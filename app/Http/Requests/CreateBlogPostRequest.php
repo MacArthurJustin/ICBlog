@@ -25,7 +25,7 @@ class CreateBlogPostRequest extends Request {
 	{
 		return [
 			'title' => 'required|min:5',
-			'body' => 'required|min:25'
+			'body' => 'required|min:5'
 		];
 	}
 
