@@ -8,7 +8,7 @@
 			<h2><a href="{{ action('BlogController@show', $post->id) }}">{{ $post->title }}</a></h2>
 			<h5>by <a href="{{ action('BlogController@showUser', $post->user->id) }}">{{ $post->user->name }}</a> on {{ $post->posted_at }}</h5>
 			<div class="body">
-				{{ str_limit($post->body, $limit = 200, $end = '...') }}
+				@Commonmark(str_limit($post->body, $limit = 500, $end = '...'))
 			</div>
 			<div>
 				<a href="{{ action('BlogController@show', $post->id) }}">Read More</a>

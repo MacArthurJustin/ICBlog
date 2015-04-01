@@ -14,7 +14,7 @@
 		</h1>
 		<h5>By {{ $post->user->name }} on {{ $post->posted_at }}</h5>
 		<div class="body">
-			{{ $post->body }}
+			@Commonmark($post->body)
 		</div>
 	</section>
 	<hr/>
