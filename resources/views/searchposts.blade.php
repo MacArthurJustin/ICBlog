@@ -1,12 +1,12 @@
 @extends('app')
 
 @section('content')
-	<h1>Blog Posts</h1>
+	<h1>Blog Posts containing &quot;{{$query}}&quot;</h1>
 	
 	@foreach($posts as $post)
 		<article>
 			<h2><a href="{{ action('BlogController@show', $post->id) }}">{{ $post->title }}</a></h2>
-			<h5>by <a href="{{ action('BlogController@showUser', $post->user->id) }}">{{ $post->user->name }}</a> on {{ $post->posted_at }}</h5>
+			<h5>by {{ $post->user->name }} on {{ $post->posted_at }}</h5>
 			<div class="body">
 				{{ str_limit($post->body, $limit = 200, $end = '...') }}
 			</div>

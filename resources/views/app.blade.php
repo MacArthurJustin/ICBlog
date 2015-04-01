@@ -42,6 +42,16 @@
 				@endif
 				
 				<ul class="nav navbar-nav navbar-right">
+					<li>
+					{!! Form::open(array('action' => 'BlogController@search', 'method' => 'GET')) !!}
+					@if(isset($query))
+						{!! Form::text('query', $query) !!}
+					@else
+						{!! Form::text('query', '') !!}
+					@endif
+					{!! Form::submit('Search') !!}
+					{!! Form::close() !!}
+					</li>
 					@if (Auth::guest())
 						<li><a href="{{ url('/auth/login') }}">Login</a></li>
 						<li><a href="{{ url('/auth/register') }}">Register</a></li>

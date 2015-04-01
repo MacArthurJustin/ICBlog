@@ -3,6 +3,7 @@
 use Auth;
 use App\BlogPost;
 use App\BlogComment;
+use App\User;
 use App\Http\Requests\CreateBlogCommentRequest;
 use App\Http\Requests\CreateBlogPostRequest;
 use App\Http\Requests\UpdateBlogPostRequest;
@@ -33,6 +34,21 @@ class BlogController extends Controller {
 	}
 
 	/**
+	 * Shows BlogPosts that match the search query
+	 *
+	 * @return Response
+	 */
+	public function search() {
+		$query = Request::input("query");
+		
+		$posts = BlogPost::where('title', 'LIKE', "%{$query}%")
+						 ->orWhere('body', 'LIKE', "%{$query}%")
+						 ->get();
+		
+		return view('searchposts', compact('posts', 'query'));
+	}
+
+	/**
 	 * Show a single BlogPost referenced by ID
 	 *
 	 * @param Integer $id The ID of the post to show 
@@ -43,6 +59,20 @@ class BlogController extends Controller {
 		$post = BlogPost::find($id);
 		
 		return view('post', compact('post'));
+	}
+
+	/**
+	 * Show a single BlogPost referenced by ID
+	 *
+	 * @param Integer $id The ID of the post to show 
+	 *
+	 * @return Response
+	 */
+	public function showUser($id) {
+		$user = User::find($id);
+		$posts = BlogPost::where('user_id', '=', $id)->published()->get();
+		
+		return view('userposts', compact('user', 'posts'));
 	}
 
 	/**
@@ -143,6 +173,31 @@ class BlogController extends Controller {
 			$comment->update($request->all());
 			
 			return Redirect::to("post/{$id}");
+		} else {
+			return Redirect::to('auth/login');
+		}
+	}
+
+	/**
+	 * Update User Level
+	 *
+	 * @param Integer $id The ID of the user to edit
+	 *
+	 * @return Response
+	 */
+	public function updateUser($id) {
+		if(Auth::check()) {
+			$user = User::find($id);
+			
+			if (Request::has('author')) {
+				$user->level = 1;
+			} else {
+				$user->level = 0;
+			}
+			
+			$user->save();
+			
+			return Redirect::to("user/edit");
 		} else {
 			return Redirect::to('auth/login');
 		}
