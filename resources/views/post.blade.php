@@ -22,20 +22,21 @@
 		<h2>Comments</h2>
 		@foreach($post->comments as $comment)
 			<article>
-				<h5>
+				<h4>
 					{{ $comment->user->name }}
 					@if(Auth::check())
 						@if(Auth::user()->id == $comment->user_id)
 							{!! Form::open(array('action' => array("BlogController@destroyComment", $comment->id), 'method' => 'DELETE')) !!}
-							{!! Form::submit('Delete Comment') !!}
+							{!! Form::submit('Delete Comment', array('style' => 'font-size: 14px;')) !!}
 							{!! Form::close() !!}
 						@endif
 					@endif
-				</h5>
+				</h4>
 				<div class="body">
-					{{ $comment->body }}
+					@Commonmark($comment->body)
 				</div>
 			</article>
+			<hr/>
 		@endforeach
 	</section>
 	@if(Auth::check())
