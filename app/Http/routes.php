@@ -11,9 +11,21 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
+Route::get('/', 'BlogController@index');
+Route::get('post/create', 'BlogController@create');
+Route::get('post/{id}/edit', 'BlogController@editPost');
+Route::get('post/{id}', 'BlogController@show');
 
-Route::get('home', 'HomeController@index');
+Route::post('post', 'BlogController@storePost');
+Route::post('comment/{id}', 'BlogController@storeComment');
+
+Route::put('post/{id}', 'BlogController@updatePost');
+Route::patch('post/{id}', 'BlogController@updatePost');
+Route::put('comment/{id}', 'BlogController@updateComment');
+Route::patch('comment/{id}', 'BlogController@updateComment');
+
+Route::delete('post/{id}', 'BlogController@destroyPost');
+Route::delete('comment/{id}', 'BlogController@destroyComment');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
